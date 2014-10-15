@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Quick Sounds, A Custom Soundboard for Android</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="">
+    <link rel="canonical" href="http://matt-crouch.com/2014/07/31/quick-sounds-a-custom-soundboard-for-android/">
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/narrow.css">
+    <link rel="stylesheet" href="/css/posts.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="shortcut icon" href="/images/favicon.ico" />
+    <link rel="icon" sizes="16x16 32x32" href="/images/favicon.ico">
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
+    <link rel="stylesheet" href="/css/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+    <script type="text/javascript" src="/js/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21482485-1', 'auto');
+  ga('require', 'displayfeatures');
+  ga('send', 'pageview');
+
+</script>
+
+
+</head>
+
+
+  <body>
+    <div class="container">
+      <div class="header">
+  <nav class="navbar navbar-default" role="navigation">
+
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Matthew's Projects and Stuff</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/about">About</a></li>
+      </ul>
+    </div>
+
+  </nav>
+</div>
+
+
+      <div class="row">
+        <div class="col-lg-12">
+          <script>
+  $(document).ready(function() {
+    $(".fancybox").fancybox({
+      openEffect	: 'fade',
+      closeEffect	: 'fade'
+    });
+  });
+</script>
+
+<div class="post">
+
+  <header class="post-header">
+    <h1>Quick Sounds, A Custom Soundboard for Android</h1>
+    <p class="meta">Jul 31, 2014</p>
+  </header>
+
+  <article class="post-content">
+  <p>I don’t know about you, but I have a ton (ok, a couple dozen, tops) of funny 1-2 second sound clips on my phone. Most of them seem to originate in some inside joke from years ago, and its fun to play them for friends when that inside joke pops into the conversation. This is where I got the idea to make a custom soundboard for my Android device.</p>
+
+<p>Previously, I had to open up the music player on the phone which sorts all the audio on the device by standard metadata such as artist, album or genre. This just didn’t work for my use case. These short audio clips have no artist, album or genre, and it simply took too long to find the clip and play it. By the time I could find the sound and play it, the moment had passed.</p>
+
+<p>At the time, way back in 2012, I searched the Google Play Store for a custom soundboard, and to my surprise I could only find one. I hadn’t tried to do anything with Android development before, but I thought it couldn’t be all that hard to write an app to do what I wanted. I didn’t keep track of my progress like I try to in more current projects, but I do have all of the source code on <a href="https://github.com/macrouch/quick-sounds" target="_blank">github</a>.</p>
+
+<p>This last month I bought a <a href="https://play.google.com/store/devices/details/LG_G_Watch_Black_Titan?id=lg_g_watch_black&amp;hl=en" target="_blank">LG G Watch</a>. This got me wanting to take a another look at the app, and I spent a few nights updating the code and removing all of the <em>numerous</em> deprecation warnings. I also thought it would be fun to make Quick Sounds compatible with Android Wear devices. I hoped to give a voice command such as, “play a sound,” and the app on the phone would play an audio clip. Unfortunately custom voice commands like this are not available at this time. To just learn a bit about how the smart watch interfaces with a phone I added a watch version of the app, that has a button to play the first clip. I moved on from this project to put together a Android Wear demo I presented at work. If I have the time I would like to come back to this idea and work on it more. I would like to display the name of the audio clip on the watch, so the user knows what sound will be played, and possibly add more features.</p>
+
+<p><a href="https://github.com/macrouch/quick-sounds" class="btn btn-lg btn-primary" target="_blank">View on Github</a>
+<a href="http://play.google.com/store/apps/details?id=com.sleekcoder.quick_sounds" target="_blank">
+  <img src="http://www.android.com/images/brand/get_it_on_play_logo_small.png" alt="Get it on Google Play" />
+</a></p>
+
+  </article>
+
+  <ul class="tags">
+    
+    Tags:
+    
+      <li class="tag_list_item">
+        <a class="tag_list_link" href="/tag/Android">Android</a>
+      </li>
+    
+    
+  </ul>
+
+</div>
+
+<div class="comments">
+  
+</div>
+
+        </div>
+      </div>
+
+      <div class="footer">
+    <h3 class="footer-heading">Matthew's Projects and Stuff</h3>
+
+    <div class="col-lg-4">
+      <p>Matthew Crouch</p>
+      <p><a href="/feed.xml">RSS</a></p>
+    </div>
+    <div class="col-lg-4">
+      <p>
+        <a href="https://github.com/macrouch">
+          <i class="fa fa-github"></i> macrouch
+        </a>
+      </p>
+      <p>
+        <a href="https://twitter.com/matt_crouch">
+          <i class="fa fa-twitter"></i>matt_crouch
+        </a>
+      </p>
+    </div>
+
+  </div>
+
+    </div>
+
+  </body>
+</html>
