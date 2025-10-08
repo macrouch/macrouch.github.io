@@ -94,7 +94,7 @@
 
 <p>Next, we need an Arduino sketch to test the values we are getting from the switch, so we know if it is working correctly. This will take a reading from the switch 10 times a second and display that reading along with the open/closed state of the door.</p>
 
-<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="n">magneticPin</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="n">magneticPin</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
 <span class="kt">int</span> <span class="n">magneticReading</span><span class="p">;</span>
 
 <span class="kt">void</span> <span class="nf">setup</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
@@ -104,50 +104,50 @@
 <span class="kt">void</span> <span class="nf">loop</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">magneticReading</span> <span class="o">=</span> <span class="n">analogRead</span><span class="p">(</span><span class="n">magneticPin</span><span class="p">);</span>
 
-  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Magnetic reading = &quot;</span><span class="p">);</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"Magnetic reading = "</span><span class="p">);</span>
   <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">magneticReading</span><span class="p">);</span>
 
   <span class="k">if</span> <span class="p">(</span><span class="n">magneticReading</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot; - Door closed&quot;</span><span class="p">);</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">" - Door closed"</span><span class="p">);</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot; - Door open&quot;</span><span class="p">);</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">" - Door open"</span><span class="p">);</span>
   <span class="p">}</span>
   <span class="n">delay</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <p>Great, so now we have a switch that will tell us if the door is open or closed and, more importantly, if the restroom is available. Well, it wouldn’t make sense to try to run cables all the way to the restroom door so we can read this value on a computer. It would be great if we could just pull up the information on our individual machines. We can accomplish that with a <a href="http://www.adafruit.com/product/1491" target="_blank">WiFi shield</a> for the Arduino, and a simple Ruby on Rails web application to receive and display the state of the door.</p>
 
 <p>The Ruby on Rails application is very basic, the source code can be viewed <a href="https://github.com/macrouch/gotta_go/tree/master/gotta_go_rails" target="_blank">here</a>. The website expects each door to have a name, and each sensor to have a name, token, and a restroom_id. For this quick application I just set everything up manually in the Rails console.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&gt;</span> <span class="n">magnetic_restroom</span> <span class="o">=</span> <span class="no">Restroom</span><span class="o">.</span><span class="n">create!</span><span class="p">({</span><span class="nb">name</span><span class="p">:</span> <span class="s2">&quot;Restroom&quot;</span><span class="p">})</span>
-<span class="o">&gt;</span> <span class="n">magnetic_restroom</span><span class="o">.</span><span class="n">sensors</span><span class="o">.</span><span class="n">create!</span><span class="p">({</span><span class="nb">name</span><span class="p">:</span> <span class="s2">&quot;Magnetic Sensor&quot;</span><span class="p">,</span> <span class="ss">token</span><span class="p">:</span> <span class="s2">&quot;magnetic&quot;</span><span class="p">})</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&gt;</span> <span class="n">magnetic_restroom</span> <span class="o">=</span> <span class="no">Restroom</span><span class="p">.</span><span class="nf">create!</span><span class="p">({</span><span class="ss">name: </span><span class="s2">"Restroom"</span><span class="p">})</span>
+<span class="o">&gt;</span> <span class="n">magnetic_restroom</span><span class="p">.</span><span class="nf">sensors</span><span class="p">.</span><span class="nf">create!</span><span class="p">({</span><span class="ss">name: </span><span class="s2">"Magnetic Sensor"</span><span class="p">,</span> <span class="ss">token: </span><span class="s2">"magnetic"</span><span class="p">})</span></code></pre></figure>
 
 <p>We also need to modify our Arduino sketch to send a HTTP POST to our web server. Its kind of long, but take look at the setup() and loop() methods for the good stuff. We still check to see if the door is open or closed, and if the state of the door changed, then we send the updated status to the server. The rest of the code is managing the WiFi shield and sendStatus() builds the POST and sends it to the server. Note you need to replace SSID, PASSWORD, and HOST with the information from your WiFi network and server.</p>
 
-<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include &lt;Adafruit_CC3000.h&gt;</span>
-<span class="cp">#include &lt;ccspi.h&gt;</span>
-<span class="cp">#include &lt;SPI.h&gt;</span>
-<span class="cp">#include &lt;string.h&gt;</span>
-<span class="cp">#include &quot;utility/debug.h&quot;</span>
-
-<span class="cp">#define ADAFRUIT_CC3000_IRQ   3</span>
-<span class="cp">#define ADAFRUIT_CC3000_VBAT  5</span>
-<span class="cp">#define ADAFRUIT_CC3000_CS    10</span>
-
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include</span> <span class="cpf">&lt;Adafruit_CC3000.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;ccspi.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;SPI.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">"utility/debug.h"</span><span class="cp">
+</span>
+<span class="cp">#define ADAFRUIT_CC3000_IRQ   3
+#define ADAFRUIT_CC3000_VBAT  5
+#define ADAFRUIT_CC3000_CS    10
+</span>
 <span class="n">Adafruit_CC3000</span> <span class="n">cc3000</span> <span class="o">=</span> <span class="n">Adafruit_CC3000</span><span class="p">(</span><span class="n">ADAFRUIT_CC3000_CS</span><span class="p">,</span> <span class="n">ADAFRUIT_CC3000_IRQ</span><span class="p">,</span> <span class="n">ADAFRUIT_CC3000_VBAT</span><span class="p">,</span>
 <span class="n">SPI_CLOCK_DIVIDER</span><span class="p">);</span>
 
-<span class="cp">#define WLAN_SSID       &quot;SSID&quot;        </span><span class="c1">// replace with your information</span>
-<span class="cp">#define WLAN_PASS       &quot;PASSWORD&quot;    </span><span class="c1">// replace with your information</span>
-<span class="cp">#define WLAN_SECURITY   WLAN_SEC_WPA2</span>
-<span class="cp">#define IDLE_TIMEOUT_MS  3000</span>
-<span class="cp">#define host      &quot;HOST&quot;              </span><span class="c1">// replace with your information</span>
-<span class="cp">#define port      3005</span>
-<span class="cp">#define endpoint  &quot;/sensor_report&quot;</span>
-<span class="k">const</span> <span class="kt">char</span> <span class="n">PROGMEM</span> <span class="n">agent</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;Arduino-GottaGo&quot;</span><span class="p">;</span>
+<span class="cp">#define WLAN_SSID       "SSID"        // replace with your information
+#define WLAN_PASS       "PASSWORD"    // replace with your information
+#define WLAN_SECURITY   WLAN_SEC_WPA2
+#define IDLE_TIMEOUT_MS  3000
+#define host      "HOST"              // replace with your information
+#define port      3005
+#define endpoint  "/sensor_report"
+</span><span class="k">const</span> <span class="kt">char</span> <span class="n">PROGMEM</span> <span class="n">agent</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"Arduino-GottaGo"</span><span class="p">;</span>
 
-<span class="cp">#define F2(progmem_ptr) (const __FlashStringHelper *)progmem_ptr</span>
-<span class="kt">uint32_t</span> <span class="n">ip</span><span class="p">;</span>
+<span class="cp">#define F2(progmem_ptr) (const __FlashStringHelper *)progmem_ptr
+</span><span class="kt">uint32_t</span> <span class="n">ip</span><span class="p">;</span>
 <span class="n">Adafruit_CC3000_Client</span> <span class="n">client</span><span class="p">;</span>        <span class="c1">// For WiFi connections</span>
 <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">long</span>
 <span class="n">dhcpTimeout</span>     <span class="o">=</span> <span class="mi">60L</span> <span class="o">*</span> <span class="mi">1000L</span><span class="p">,</span> <span class="c1">// Max time to wait for address from DHCP</span>
@@ -155,10 +155,10 @@
 <span class="n">responseTimeout</span> <span class="o">=</span> <span class="mi">15L</span> <span class="o">*</span> <span class="mi">1000L</span><span class="p">;</span> <span class="c1">// Max time to wait for data from server</span>
 
 
-<span class="cp">#define OCCUPIED  &quot;1&quot;</span>
-<span class="cp">#define AVAILABLE &quot;0&quot;</span>
-<span class="cp">#defind magnetic  &quot;magnetic&quot;</span>
-<span class="n">boolean</span> <span class="n">magneticState</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+<span class="cp">#define OCCUPIED  "1"
+#define AVAILABLE "0"
+#defind magnetic  "magnetic"
+</span><span class="n">boolean</span> <span class="n">magneticState</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
 
 <span class="kt">int</span> <span class="n">magneticPin</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
 <span class="kt">int</span> <span class="n">magneticReading</span><span class="p">;</span>
@@ -167,16 +167,16 @@
 <span class="kt">void</span> <span class="nf">setup</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
   <span class="kt">uint32_t</span> <span class="n">t</span><span class="p">;</span>
   <span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">9600</span><span class="p">);</span>
-  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Hello! Initializing CC3000...&quot;</span><span class="p">));</span>
-  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">cc3000</span><span class="p">.</span><span class="n">begin</span><span class="p">())</span> <span class="n">hang</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;failed. Check your wiring?&quot;</span><span class="p">));</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"Hello! Initializing CC3000..."</span><span class="p">));</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">cc3000</span><span class="p">.</span><span class="n">begin</span><span class="p">())</span> <span class="n">hang</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"failed. Check your wiring?"</span><span class="p">));</span>
 
-  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;OK</span><span class="se">\r\n</span><span class="s">Connecting to network...&quot;</span><span class="p">));</span>
-  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">cc3000</span><span class="p">.</span><span class="n">connectToAP</span><span class="p">(</span><span class="n">WLAN_SSID</span><span class="p">,</span> <span class="n">WLAN_PASS</span><span class="p">,</span> <span class="n">WLAN_SECURITY</span><span class="p">))</span> <span class="n">hang</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Failed!&quot;</span><span class="p">));</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"OK</span><span class="se">\r\n</span><span class="s">Connecting to network..."</span><span class="p">));</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">cc3000</span><span class="p">.</span><span class="n">connectToAP</span><span class="p">(</span><span class="n">WLAN_SSID</span><span class="p">,</span> <span class="n">WLAN_PASS</span><span class="p">,</span> <span class="n">WLAN_SECURITY</span><span class="p">))</span> <span class="n">hang</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"Failed!"</span><span class="p">));</span>
 
-  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;OK</span><span class="se">\r\n</span><span class="s">Requesting address from DHCP server...&quot;</span><span class="p">));</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"OK</span><span class="se">\r\n</span><span class="s">Requesting address from DHCP server..."</span><span class="p">));</span>
   <span class="k">for</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">millis</span><span class="p">();</span> <span class="o">!</span><span class="n">cc3000</span><span class="p">.</span><span class="n">checkDHCP</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="p">((</span><span class="n">millis</span><span class="p">()</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">dhcpTimeout</span><span class="p">);</span> <span class="n">delay</span><span class="p">(</span><span class="mi">100</span><span class="p">));</span>
-  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">cc3000</span><span class="p">.</span><span class="n">checkDHCP</span><span class="p">())</span> <span class="n">hang</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;failed&quot;</span><span class="p">));</span>
-  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;OK&quot;</span><span class="p">));</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">cc3000</span><span class="p">.</span><span class="n">checkDHCP</span><span class="p">())</span> <span class="n">hang</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"failed"</span><span class="p">));</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"OK"</span><span class="p">));</span>
 
   <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">displayConnectionDetails</span><span class="p">());</span>
 <span class="p">}</span>
@@ -185,10 +185,10 @@
   <span class="n">magneticReading</span> <span class="o">=</span> <span class="n">analogRead</span><span class="p">(</span><span class="n">magneticPin</span><span class="p">);</span>
 
   <span class="k">if</span> <span class="p">(</span><span class="n">magneticReading</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot; - Door closed&quot;</span><span class="p">);</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">" - Door closed"</span><span class="p">);</span>
     <span class="n">reading</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot; - Door open&quot;</span><span class="p">);</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">" - Door open"</span><span class="p">);</span>
     <span class="n">reading</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
   <span class="p">}</span>
 
@@ -205,12 +205,12 @@
 
 <span class="kt">void</span> <span class="nf">sendStatus</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">sensor</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">sensor_status</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">ip</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="c1">// Try looking up the website&#39;s IP address</span>
+  <span class="c1">// Try looking up the website's IP address</span>
   <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">host</span><span class="p">);</span>
-  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot; -&gt; &quot;</span><span class="p">));</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">" -&gt; "</span><span class="p">));</span>
   <span class="k">while</span> <span class="p">(</span><span class="n">ip</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="n">cc3000</span><span class="p">.</span><span class="n">getHostByName</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ip</span><span class="p">))</span> <span class="p">{</span>
-      <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Couldn&#39;t resolve!&quot;</span><span class="p">));</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"Couldn't resolve!"</span><span class="p">));</span>
     <span class="p">}</span>
     <span class="n">delay</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
   <span class="p">}</span>
@@ -219,26 +219,26 @@
 
   <span class="n">client</span> <span class="o">=</span> <span class="n">cc3000</span><span class="p">.</span><span class="n">connectTCP</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">);</span>
   <span class="k">if</span><span class="p">(</span><span class="n">client</span><span class="p">.</span><span class="n">connected</span><span class="p">())</span> <span class="p">{</span> <span class="c1">// Success!</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;OK</span><span class="se">\r\n</span><span class="s">Issuing HTTP request...&quot;</span><span class="p">));</span>
-    <span class="kt">char</span> <span class="n">msg</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;test&quot;</span><span class="p">;</span>
-    <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;POST &quot;</span><span class="p">));</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"OK</span><span class="se">\r\n</span><span class="s">Issuing HTTP request..."</span><span class="p">));</span>
+    <span class="kt">char</span> <span class="n">msg</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"test"</span><span class="p">;</span>
+    <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"POST "</span><span class="p">));</span>
     <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">endpoint</span><span class="p">);</span>
-    <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot; HTTP/1.1</span><span class="se">\r\n</span><span class="s">Host: &quot;</span><span class="p">));</span>
+    <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">" HTTP/1.1</span><span class="se">\r\n</span><span class="s">Host: "</span><span class="p">));</span>
     <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">host</span><span class="p">);</span>
-    <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n</span><span class="s">User-Agent: &quot;</span><span class="p">));</span>
+    <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"</span><span class="se">\r\n</span><span class="s">User-Agent: "</span><span class="p">));</span>
     <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">F2</span><span class="p">(</span><span class="n">agent</span><span class="p">));</span>
-    <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n</span><span class="s">Connection: close</span><span class="se">\r\n</span><span class="s">&quot;</span>
-      <span class="s">&quot;Content-Type: application/x-www-form-urlencoded;charset=UTF-8</span><span class="se">\r\n</span><span class="s">&quot;</span>
-      <span class="s">&quot;Content-Length: &quot;</span><span class="p">));</span>
-    <span class="c1">// 6 =&gt; &quot;token=&quot;</span>
-    <span class="c1">// 8 =&gt; &quot;&amp;status=&quot;</span>
+    <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"</span><span class="se">\r\n</span><span class="s">Connection: close</span><span class="se">\r\n</span><span class="s">"</span>
+      <span class="s">"Content-Type: application/x-www-form-urlencoded;charset=UTF-8</span><span class="se">\r\n</span><span class="s">"</span>
+      <span class="s">"Content-Length: "</span><span class="p">));</span>
+    <span class="c1">// 6 =&gt; "token="</span>
+    <span class="c1">// 8 =&gt; "&amp;status="</span>
     <span class="n">client</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="mi">14</span> <span class="o">+</span> <span class="n">encodedLength</span><span class="p">(</span><span class="n">sensor</span><span class="p">)</span> <span class="o">+</span> <span class="n">encodedLength</span><span class="p">(</span><span class="n">sensor_status</span><span class="p">));</span>
-    <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n\r\n</span><span class="s">token=&quot;</span><span class="p">));</span>
+    <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"</span><span class="se">\r\n\r\n</span><span class="s">token="</span><span class="p">));</span>
     <span class="n">urlEncode</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">sensor</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
-    <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;&amp;status=&quot;</span><span class="p">));</span>
+    <span class="n">client</span><span class="p">.</span><span class="n">fastrprint</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"&amp;status="</span><span class="p">));</span>
     <span class="n">urlEncode</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">sensor_status</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
 
-    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;OK</span><span class="se">\r\n</span><span class="s">Awaiting response...&quot;</span><span class="p">));</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"OK</span><span class="se">\r\n</span><span class="s">Awaiting response..."</span><span class="p">));</span>
     <span class="cm">/* Read data until either the connection is closed, or the idle timeout is reached. */</span>
     <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">lastRead</span> <span class="o">=</span> <span class="n">millis</span><span class="p">();</span>
     <span class="k">while</span> <span class="p">(</span><span class="n">client</span><span class="p">.</span><span class="n">connected</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">millis</span><span class="p">()</span> <span class="o">-</span> <span class="n">lastRead</span> <span class="o">&lt;</span> <span class="n">IDLE_TIMEOUT_MS</span><span class="p">))</span> <span class="p">{</span>
@@ -249,10 +249,10 @@
       <span class="p">}</span>
     <span class="p">}</span>
     <span class="n">client</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;-------------------------------------&quot;</span><span class="p">));</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"-------------------------------------"</span><span class="p">));</span>
   <span class="p">}</span>
-  <span class="k">else</span> <span class="p">{</span> <span class="c1">// Couldn&#39;t contact server</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;failed&quot;</span><span class="p">));</span>
+  <span class="k">else</span> <span class="p">{</span> <span class="c1">// Couldn't contact server</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"failed"</span><span class="p">));</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
@@ -269,20 +269,20 @@
 
   <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">cc3000</span><span class="p">.</span><span class="n">getIPAddress</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ipAddress</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">netmask</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">gateway</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dhcpserv</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dnsserv</span><span class="p">))</span>
   <span class="p">{</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Unable to retrieve the IP Address!</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">));</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"Unable to retrieve the IP Address!</span><span class="se">\r\n</span><span class="s">"</span><span class="p">));</span>
     <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
   <span class="p">}</span>
   <span class="k">else</span>
   <span class="p">{</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">IP Addr: &quot;</span><span class="p">));</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">IP Addr: "</span><span class="p">));</span>
     <span class="n">cc3000</span><span class="p">.</span><span class="n">printIPdotsRev</span><span class="p">(</span><span class="n">ipAddress</span><span class="p">);</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Netmask: &quot;</span><span class="p">));</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Netmask: "</span><span class="p">));</span>
     <span class="n">cc3000</span><span class="p">.</span><span class="n">printIPdotsRev</span><span class="p">(</span><span class="n">netmask</span><span class="p">);</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Gateway: &quot;</span><span class="p">));</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Gateway: "</span><span class="p">));</span>
     <span class="n">cc3000</span><span class="p">.</span><span class="n">printIPdotsRev</span><span class="p">(</span><span class="n">gateway</span><span class="p">);</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">DHCPsrv: &quot;</span><span class="p">));</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">DHCPsrv: "</span><span class="p">));</span>
     <span class="n">cc3000</span><span class="p">.</span><span class="n">printIPdotsRev</span><span class="p">(</span><span class="n">dhcpserv</span><span class="p">);</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">DNSserv: &quot;</span><span class="p">));</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">DNSserv: "</span><span class="p">));</span>
     <span class="n">cc3000</span><span class="p">.</span><span class="n">printIPdotsRev</span><span class="p">(</span><span class="n">dnsserv</span><span class="p">);</span>
     <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">();</span>
     <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
@@ -291,7 +291,7 @@
 
 <span class="c1">// Read from client stream with a 5 second timeout.  Although an</span>
 <span class="c1">// essentially identical method already exists in the Stream() class,</span>
-<span class="c1">// it&#39;s declared private there...so this is a local copy.</span>
+<span class="c1">// it's declared private there...so this is a local copy.</span>
 <span class="kt">int</span> <span class="nf">timedRead</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
   <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">start</span> <span class="o">=</span> <span class="n">millis</span><span class="p">();</span>
   <span class="k">while</span><span class="p">((</span><span class="o">!</span><span class="n">client</span><span class="p">.</span><span class="n">available</span><span class="p">())</span> <span class="o">&amp;&amp;</span> <span class="p">((</span><span class="n">millis</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">responseTimeout</span><span class="p">));</span>
@@ -299,7 +299,7 @@
 <span class="p">}</span>
 
 <span class="c1">// For URL-encoding functions below</span>
-<span class="k">static</span> <span class="k">const</span> <span class="kt">char</span> <span class="n">PROGMEM</span> <span class="n">hexChar</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;0123456789ABCDEF&quot;</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="kt">char</span> <span class="n">PROGMEM</span> <span class="n">hexChar</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"0123456789ABCDEF"</span><span class="p">;</span>
 
 <span class="c1">// URL-encoding output function for Print class.</span>
 <span class="c1">// Input from RAM or PROGMEM (flash).  Double-encoding is a weird special</span>
@@ -308,18 +308,18 @@
 <span class="n">Print</span>      <span class="o">&amp;</span><span class="n">p</span><span class="p">,</span>       <span class="c1">// EthernetClient, Sha1, etc.</span>
 <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">src</span><span class="p">,</span>     <span class="c1">// String to be encoded</span>
 <span class="n">boolean</span>     <span class="n">progmem</span><span class="p">,</span> <span class="c1">// If true, string is in PROGMEM (else RAM)</span>
-<span class="n">boolean</span>     <span class="n">x2</span><span class="p">)</span>      <span class="c1">// If true, &quot;double encode&quot; parenthesis</span>
+<span class="n">boolean</span>     <span class="n">x2</span><span class="p">)</span>      <span class="c1">// If true, "double encode" parenthesis</span>
 <span class="p">{</span>
   <span class="kt">uint8_t</span> <span class="n">c</span><span class="p">;</span>
 
   <span class="k">while</span><span class="p">((</span><span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">progmem</span> <span class="o">?</span> <span class="n">pgm_read_byte</span><span class="p">(</span><span class="n">src</span><span class="p">)</span> <span class="o">:</span> <span class="o">*</span><span class="n">src</span><span class="p">)))</span> <span class="p">{</span>
-    <span class="k">if</span><span class="p">(((</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="sc">&#39;a&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">&#39;z&#39;</span><span class="p">))</span> <span class="o">||</span> <span class="p">((</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="sc">&#39;A&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">&#39;Z&#39;</span><span class="p">))</span> <span class="o">||</span>
-      <span class="p">((</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="sc">&#39;0&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">&#39;9&#39;</span><span class="p">))</span> <span class="o">||</span> <span class="n">strchr_P</span><span class="p">(</span><span class="n">PSTR</span><span class="p">(</span><span class="s">&quot;-_.~&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(((</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="sc">'a'</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">'z'</span><span class="p">))</span> <span class="o">||</span> <span class="p">((</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="sc">'A'</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">'Z'</span><span class="p">))</span> <span class="o">||</span>
+      <span class="p">((</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="sc">'0'</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">'9'</span><span class="p">))</span> <span class="o">||</span> <span class="n">strchr_P</span><span class="p">(</span><span class="n">PSTR</span><span class="p">(</span><span class="s">"-_.~"</span><span class="p">),</span> <span class="n">c</span><span class="p">))</span> <span class="p">{</span>
       <span class="n">p</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
-      <span class="k">if</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span> <span class="n">p</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;%25&quot;</span><span class="p">);</span>
-      <span class="k">else</span>   <span class="n">p</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="sc">&#39;%&#39;</span><span class="p">);</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span> <span class="n">p</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"%25"</span><span class="p">);</span>
+      <span class="k">else</span>   <span class="n">p</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="sc">'%'</span><span class="p">);</span>
       <span class="n">p</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">pgm_read_byte</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hexChar</span><span class="p">[</span><span class="n">c</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">]));</span>
       <span class="n">p</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">pgm_read_byte</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hexChar</span><span class="p">[</span><span class="n">c</span> <span class="o">&amp;</span> <span class="mi">15</span><span class="p">]));</span>
     <span class="p">}</span>
@@ -333,12 +333,12 @@
   <span class="kt">int</span>     <span class="n">len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
   <span class="k">while</span><span class="p">((</span><span class="n">c</span> <span class="o">=</span> <span class="o">*</span><span class="n">src</span><span class="o">++</span><span class="p">))</span> <span class="p">{</span>
-    <span class="n">len</span> <span class="o">+=</span> <span class="p">(((</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="sc">&#39;a&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">&#39;z&#39;</span><span class="p">))</span> <span class="o">||</span> <span class="p">((</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="sc">&#39;A&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">&#39;Z&#39;</span><span class="p">))</span> <span class="o">||</span>
-      <span class="p">((</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="sc">&#39;0&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">&#39;9&#39;</span><span class="p">))</span> <span class="o">||</span> <span class="n">strchr_P</span><span class="p">(</span><span class="n">PSTR</span><span class="p">(</span><span class="s">&quot;-_.~&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">))</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">3</span><span class="p">;</span>
+    <span class="n">len</span> <span class="o">+=</span> <span class="p">(((</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="sc">'a'</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">'z'</span><span class="p">))</span> <span class="o">||</span> <span class="p">((</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="sc">'A'</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">'Z'</span><span class="p">))</span> <span class="o">||</span>
+      <span class="p">((</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="sc">'0'</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">'9'</span><span class="p">))</span> <span class="o">||</span> <span class="n">strchr_P</span><span class="p">(</span><span class="n">PSTR</span><span class="p">(</span><span class="s">"-_.~"</span><span class="p">),</span> <span class="n">c</span><span class="p">))</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">3</span><span class="p">;</span>
   <span class="p">}</span>
 
   <span class="k">return</span> <span class="n">len</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <p>And that’s all there is to it. Fire up your server, update the code on your Arduino, and test everything again. Then, find a discrete place to install the Arduino and enjoy all that time you will save not having to leave your desk to check the restroom!</p>
 
@@ -383,11 +383,6 @@
       <p>
         <a href="https://github.com/macrouch">
           <i class="fa fa-github"></i> macrouch
-        </a>
-      </p>
-      <p>
-        <a href="https://twitter.com/matt_crouch">
-          <i class="fa fa-twitter"></i>matt_crouch
         </a>
       </p>
     </div>

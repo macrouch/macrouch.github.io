@@ -127,7 +127,7 @@
   </div>
 </div>
 
-<h3 id="d-printed-parts">3d Printed Parts</h3>
+<h3 id="3d-printed-parts">3d Printed Parts</h3>
 <p>To mount the display to the backboard, I printed a frame for the display. This frame fits in the hole I cut into the backboard. Next, I printed a second frame to hold the first frame in place. I used super glue to attach frame #2 to the frame #1 and the backboard. Unfortunately, I don’t have images of what these frame look like before I glued everything together.</p>
 
 <div class="row">
@@ -161,7 +161,7 @@
 <h3 id="code">Code</h3>
 <p>The code for this project is very simple. After the first basket is made the game starts. When time runs out, I print the final score, wait 5 seconds, then start over at 30 seconds and wait for a basket to start the next game.</p>
 
-<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">if</span> <span class="p">(</span><span class="n">isBallInHoop</span><span class="p">())</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">if</span> <span class="p">(</span><span class="n">isBallInHoop</span><span class="p">())</span> <span class="p">{</span>
   <span class="n">start_game</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
 <span class="p">}</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">start_game</span><span class="p">)</span> <span class="p">{</span>
@@ -173,51 +173,51 @@
   <span class="p">}</span>
   <span class="n">printMatrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">baskets</span><span class="p">);</span>
   <span class="n">delay</span><span class="p">(</span><span class="mi">5000</span><span class="p">);</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <p>If the time is an even second, I update the display with the time and score. I also save this time for later use.</p>
 
-<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">if</span> <span class="p">(</span><span class="n">time</span> <span class="o">%</span> <span class="mi">1000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">if</span> <span class="p">(</span><span class="n">time</span> <span class="o">%</span> <span class="mi">1000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">print_time</span> <span class="o">=</span> <span class="n">time</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
   <span class="n">printMatrix</span><span class="p">(</span><span class="n">print_time</span><span class="p">,</span> <span class="n">baskets</span><span class="p">);</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <p>I keep track of when the ball is in the hoop, and when it leaves. This allows the ball the take a long time to get through the net, while only adding one point.</p>
 
-<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">if</span> <span class="p">(</span><span class="n">in_hoop</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">if</span> <span class="p">(</span><span class="n">in_hoop</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">isBallInHoop</span><span class="p">())</span> <span class="p">{</span>
     <span class="n">in_hoop</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
   <span class="p">}</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <p>When a basket is scored, I update the basket total, set in_hoop to true, and update the display. This is where I use the saved time from earlier.</p>
 
-<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">in_hoop</span> <span class="o">&amp;&amp;</span> <span class="n">isBallInHoop</span><span class="p">())</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">in_hoop</span> <span class="o">&amp;&amp;</span> <span class="n">isBallInHoop</span><span class="p">())</span> <span class="p">{</span>
   <span class="n">in_hoop</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
   <span class="n">baskets</span><span class="o">++</span><span class="p">;</span>
   <span class="n">printMatrix</span><span class="p">(</span><span class="n">print_time</span><span class="p">,</span> <span class="n">baskets</span><span class="p">);</span>
-  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;basketball is in the way!&quot;</span><span class="p">);</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"basketball is in the way!"</span><span class="p">);</span>
   <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">baskets</span><span class="p">);</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <p>The full code can be seen below, or downloaded from <a href="https://github.com/macrouch/basketball_scoreboard" target="_blank">github</a> with the necessary libraries included.</p>
 
-<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include &lt;Wire.h&gt;</span>
-<span class="cp">#include &quot;Adafruit_LEDBackpack.h&quot;</span>
-<span class="cp">#include &quot;Adafruit_GFX.h&quot;</span>
-
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include</span> <span class="cpf">&lt;Wire.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">"Adafruit_LEDBackpack.h"</span><span class="cp">
+#include</span> <span class="cpf">"Adafruit_GFX.h"</span><span class="cp">
+</span>
 <span class="n">Adafruit_7segment</span> <span class="n">matrix</span> <span class="o">=</span> <span class="n">Adafruit_7segment</span><span class="p">();</span>
 
-<span class="cp">#define PIN 1</span>
-<span class="cp">#define     IR_LED                 13</span>
-<span class="cp">#define     IR_SENSOR              4</span>
-
+<span class="cp">#define PIN 1
+#define     IR_LED                 13
+#define     IR_SENSOR              4
+</span>
 <span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
-<span class="cp">#ifndef __AVR_ATtiny85__</span>
-  <span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">9600</span><span class="p">);</span>
-  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Basketball Scoreboard!&quot;</span><span class="p">);</span>
-<span class="cp">#endif</span>
-
+<span class="cp">#ifndef __AVR_ATtiny85__
+</span>  <span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">9600</span><span class="p">);</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"Basketball Scoreboard!"</span><span class="p">);</span>
+<span class="cp">#endif
+</span>
   <span class="n">matrix</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mh">0x70</span><span class="p">);</span>
 
   <span class="n">pinMode</span><span class="p">(</span><span class="n">IR_LED</span><span class="p">,</span> <span class="n">OUTPUT</span><span class="p">);</span>
@@ -255,7 +255,7 @@
         <span class="n">in_hoop</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
         <span class="n">baskets</span><span class="o">++</span><span class="p">;</span>
         <span class="n">printMatrix</span><span class="p">(</span><span class="n">print_time</span><span class="p">,</span> <span class="n">baskets</span><span class="p">);</span>
-        <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;basketball is in the way!&quot;</span><span class="p">);</span>
+        <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"basketball is in the way!"</span><span class="p">);</span>
         <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">baskets</span><span class="p">);</span>
       <span class="p">}</span>
 
@@ -289,7 +289,7 @@
     <span class="k">return</span> <span class="nb">false</span><span class="p">;</span> <span class="c1">// Sensor can see LED, return false.</span>
   <span class="p">}</span>
 
-  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// Sensor can&#39;t see LED, return true.</span>
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// Sensor can't see LED, return true.</span>
 <span class="p">}</span>
 
 <span class="c1">///////////////////////////////////////////////////////</span>
@@ -300,7 +300,7 @@
 <span class="c1">///////////////////////////////////////////////////////</span>
 <span class="kt">void</span> <span class="nf">pulseIR</span><span class="p">(</span><span class="kt">long</span> <span class="n">microsecs</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// 38khz IR pulse function from Adafruit tutorial: http://learn.adafruit.com/ir-sensor/overview</span>
-  <span class="c1">// we&#39;ll count down from the number of microseconds we are told to wait</span>
+  <span class="c1">// we'll count down from the number of microseconds we are told to wait</span>
   <span class="n">cli</span><span class="p">();</span>  <span class="c1">// this turns off any background interrupts</span>
 
   <span class="k">while</span> <span class="p">(</span><span class="n">microsecs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
@@ -315,7 +315,7 @@
   <span class="p">}</span>
 
   <span class="n">sei</span><span class="p">();</span>  <span class="c1">// this turns them back on</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <h3 id="demo">Demo</h3>
 <iframe width="560" height="315" src="//www.youtube.com/embed/WwAOGMlpWHE" frameborder="0" allowfullscreen=""></iframe>
@@ -390,11 +390,6 @@
       <p>
         <a href="https://github.com/macrouch">
           <i class="fa fa-github"></i> macrouch
-        </a>
-      </p>
-      <p>
-        <a href="https://twitter.com/matt_crouch">
-          <i class="fa fa-twitter"></i>matt_crouch
         </a>
       </p>
     </div>
